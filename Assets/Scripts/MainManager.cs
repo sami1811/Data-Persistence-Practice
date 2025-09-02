@@ -8,9 +8,7 @@ using UnityEngine.UI;
 public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
-    public int LineCount = 6;
     public Rigidbody Ball;
-
     public Text ScoreText;
     public Text bestScoreText;
     public GameObject GameOverText;
@@ -18,19 +16,34 @@ public class MainManager : MonoBehaviour
     
     private bool m_Started = false;
     private int m_Points;
-    public static int bestScore = 0;
-    
+    private string currentPlayerName;
+    private string bestPlayerName;
+
+    public int currentBestScore = 0;
+    public int LineCount = 6;
+
     private bool m_GameOver = false;
 
     private void Awake()
     {
         backButton.SetActive(false);
+        currentBestScore = GameManager.instance.bestScore;
+        bestPlayerName = GameManager.instance.bestPlayerName;
+        currentPlayerName = GameManager.instance.playerName;
+
+
     }
 
     // Start is called before the first frame update
     public void Start()
     {
-        ScoreText.text = $"{GameManager.instance.playerName} : {m_Points}";
+        if(currentBestScore <= 0)
+        {
+            bestPlayerName = currentPlayerName;
+        }
+
+        bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
+        ScoreText.text = $"{currentPlayerName} : {m_Points}";
 
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -64,6 +77,13 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            GameManager.instance.LoadData();
+
+            currentBestScore = GameManager.instance.bestScore;
+            bestPlayerName = GameManager.instance.bestPlayerName;
+
+            bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -74,11 +94,13 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"{GameManager.instance.playerName} : {m_Points}";
+        ScoreText.text = $"{currentPlayerName} : {m_Points}";
 
-        if(m_Points > bestScore)
+        if(m_Points > currentBestScore)
         {
-            bestScore = m_Points;
+            currentBestScore = m_Points;
+            GameManager.instance.bestScore = currentBestScore;
+            GameManager.instance.bestPlayerName = currentPlayerName;
         }
     }
 
@@ -87,7 +109,7 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
         backButton.SetActive(true);
-        bestScoreText.text = $"Best Score : {GameManager.instance.playerName} : {bestScore}";
+        GameManager.instance.SaveData();
     }
 
     public void BackToMenu()
