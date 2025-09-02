@@ -15,8 +15,8 @@ public class GameManager : MonoBehaviour
     [System.Serializable]
     public class PlayerData
     {
-        public string playerName;
-        public int score;
+        public string savedPlayerName;
+        public int savedScore;
     }
 
     private void Awake()
@@ -44,8 +44,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerData saveData = new PlayerData();
 
-        saveData.playerName = bestPlayerName;
-        saveData.score = bestScore;
+        saveData.savedPlayerName = bestPlayerName;
+        saveData.savedScore = bestScore;
         
         string json = JsonUtility.ToJson(saveData);
         File.WriteAllText(customDir, json);
@@ -62,8 +62,8 @@ public class GameManager : MonoBehaviour
             string json = File.ReadAllText(customDir);
             PlayerData loadData = JsonUtility.FromJson<PlayerData>(json);
 
-            bestPlayerName = loadData.playerName;
-            bestScore = loadData.score;
+            bestPlayerName = loadData.savedPlayerName;
+            bestScore = loadData.savedScore;
 
             Debug.Log("Leaderboard Restored");
         }

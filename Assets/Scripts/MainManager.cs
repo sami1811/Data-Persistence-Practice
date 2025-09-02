@@ -26,20 +26,15 @@ public class MainManager : MonoBehaviour
 
     private void Awake()
     {
-        backButton.SetActive(false);
-        currentBestScore = GameManager.instance.bestScore;
-        bestPlayerName = GameManager.instance.bestPlayerName;
         currentPlayerName = GameManager.instance.playerName;
+
+        RestoreData();
+        backButton.SetActive(false);
     }
 
     // Start is called before the first frame update
     public void Start()
     {
-        if(currentBestScore <= 0)
-        {
-            bestPlayerName = currentPlayerName;
-        }
-
         bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
         ScoreText.text = $"{currentPlayerName} : {m_Points}";
 
@@ -73,12 +68,9 @@ public class MainManager : MonoBehaviour
                 Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
             }
         }
+
         else if (m_GameOver)
         {
-            RestoreData();
-
-            bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
-
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -106,6 +98,9 @@ public class MainManager : MonoBehaviour
         backButton.SetActive(true);
         
         GameManager.instance.SaveData();
+        RestoreData();
+
+        bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
     }
 
     public void BackToMenu()
@@ -115,11 +110,12 @@ public class MainManager : MonoBehaviour
 
     private void RestoreData()
     {
-        GameManager.instance.LoadData();
-
         currentBestScore = GameManager.instance.bestScore;
         bestPlayerName = GameManager.instance.bestPlayerName;
 
-        return;
+        if (currentBestScore <= 0)
+        {
+            bestPlayerName = currentPlayerName;
+        }
     }
 }

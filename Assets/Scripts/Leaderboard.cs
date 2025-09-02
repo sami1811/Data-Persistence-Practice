@@ -18,5 +18,7 @@ public class Leaderboard : MonoBehaviour
 
         GameManager.instance.bestScore = 0;
         GameManager.instance.bestPlayerName = null;
+
+        Debug.Log("Leaderboard has been reset.");
     }
 }
