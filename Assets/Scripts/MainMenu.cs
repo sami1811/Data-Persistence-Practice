@@ -25,4 +25,9 @@ public class MainMenu : MonoBehaviour
 #endif
 
     }
+
+    public void LeaderboardClicked()
+    {
+        SceneManager.LoadScene(2);
+    }
 }

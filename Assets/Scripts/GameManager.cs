@@ -1,7 +1,6 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class GameManager : MonoBehaviour
     public string bestPlayerName;
     public int bestScore;
 
-    private string customDir = "E:/Unity/Unity Projects/Unity Version Control/Data-Persistence-Practice/SavedGame/Leaderboard.json";
+    public string customDir = "E:/Unity/Unity Projects/Unity Version Control/Data-Persistence-Practice/SavedGame/Leaderboard.json";
 
     [System.Serializable]
     public class PlayerData
@@ -32,9 +31,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Directory.CreateDirectory(Path.GetDirectoryName(customDir));
-        if(string.IsNullOrEmpty(customDir))
+
+        if (string.IsNullOrEmpty(customDir))
         {
-            customDir = Path.Combine(Application.dataPath,"Leaderboard.json");
+            customDir = Path.Combine(Application.dataPath, "Leaderboard.json");
         }
 
         LoadData();
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
         saveData.playerName = bestPlayerName;
         saveData.score = bestScore;
-
+        
         string json = JsonUtility.ToJson(saveData);
         File.WriteAllText(customDir, json);
 

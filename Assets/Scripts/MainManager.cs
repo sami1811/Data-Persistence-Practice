@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -30,8 +30,6 @@ public class MainManager : MonoBehaviour
         currentBestScore = GameManager.instance.bestScore;
         bestPlayerName = GameManager.instance.bestPlayerName;
         currentPlayerName = GameManager.instance.playerName;
-
-
     }
 
     // Start is called before the first frame update
@@ -77,10 +75,7 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
-            GameManager.instance.LoadData();
-
-            currentBestScore = GameManager.instance.bestScore;
-            bestPlayerName = GameManager.instance.bestPlayerName;
+            RestoreData();
 
             bestScoreText.text = $"Best Score : {bestPlayerName} : {currentBestScore}";
 
@@ -109,11 +104,22 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
         backButton.SetActive(true);
+        
         GameManager.instance.SaveData();
     }
 
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void RestoreData()
+    {
+        GameManager.instance.LoadData();
+
+        currentBestScore = GameManager.instance.bestScore;
+        bestPlayerName = GameManager.instance.bestPlayerName;
+
+        return;
     }
 }
