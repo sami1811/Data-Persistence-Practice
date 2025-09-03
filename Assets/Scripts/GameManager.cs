@@ -12,11 +12,13 @@ public class GameManager : MonoBehaviour
 
     public string customDir = "E:/Unity/Unity Projects/Unity Version Control/Data-Persistence-Practice/SavedGame/Leaderboard.json";
 
+    private int playerListLength = 4;
+
     [System.Serializable]
     public class PlayerData
     {
-        public string savedPlayerName;
-        public int savedScore;
+        public List<string> savedPlayerName = new List<string>();
+        public List<int> savedScore = new List<int>();
     }
 
     private void Awake()
@@ -44,13 +46,23 @@ public class GameManager : MonoBehaviour
     {
         PlayerData saveData = new PlayerData();
 
-        saveData.savedPlayerName = bestPlayerName;
-        saveData.savedScore = bestScore;
-        
-        string json = JsonUtility.ToJson(saveData);
-        File.WriteAllText(customDir, json);
+        for (int i = 0; i < playerListLength; i++)
+        {
+            if (saveData.savedScore.Count > 0)
+            {
+                return;
+            }
+            else
+            {
+                saveData.savedPlayerName[i] = bestPlayerName;
+                saveData.savedScore[i] = bestScore;
+                
+                string json = JsonUtility.ToJson(saveData);
+                File.WriteAllText(customDir, json);
 
-        Debug.Log("Data saved at: " + customDir);
+                Debug.Log( i+1 + ": " + bestPlayerName + " scored " + bestScore + " and data is saved at " + customDir);
+            }
+        }
     }
 
     public void LoadData()
@@ -62,10 +74,25 @@ public class GameManager : MonoBehaviour
             string json = File.ReadAllText(customDir);
             PlayerData loadData = JsonUtility.FromJson<PlayerData>(json);
 
-            bestPlayerName = loadData.savedPlayerName;
-            bestScore = loadData.savedScore;
+            if (loadData.savedScore.Count > 0)
+            {
+                int tempScore = loadData.savedScore[0];
+                string tempName = loadData.savedPlayerName[0];
 
-            Debug.Log("Leaderboard Restored");
+                for (int i = 1; i < loadData.savedScore.Count; i++)
+                {
+                    if (loadData.savedScore[i] > tempScore)
+                    {
+                        tempScore = loadData.savedScore[i];
+                        tempName = loadData.savedPlayerName[i];
+                    }
+                }
+
+                bestScore = tempScore;
+                bestPlayerName = tempName;
+
+                Debug.Log("Top Player Restored");
+            }
         }
     }
 }
