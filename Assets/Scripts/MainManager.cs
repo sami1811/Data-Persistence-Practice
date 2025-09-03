@@ -96,7 +96,10 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
         backButton.SetActive(true);
-        
+
+        GameManager.instance.playerScore = m_Points;
+        GameManager.instance.playerName = currentPlayerName;
+
         GameManager.instance.SaveData();
         RestoreData();
 
