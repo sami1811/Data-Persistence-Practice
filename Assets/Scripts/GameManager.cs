@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
             if(playerScore > saveData.savedScore[playerExists])
             {
                 saveData.savedScore[playerExists] = playerScore;
-                Debug.Log(playerName + " got the new record: " + bestScore);
+                Debug.Log(playerName + " got the new record: " + playerScore);
             }
         }
 
@@ -121,8 +121,6 @@ public class GameManager : MonoBehaviour
 
     public void LoadData()
     {
-        string pathToFile = customDir;
-        
         if(File.Exists(customDir))
         {
             string json = File.ReadAllText(customDir);
@@ -130,20 +128,20 @@ public class GameManager : MonoBehaviour
 
             if (loadData.savedScore.Count > 0)
             {
-                int tempScore = loadData.savedScore[0];
-                string tempName = loadData.savedPlayerName[0];
+                int maxScore = loadData.savedScore[0];
+                int maxIndex = 0;
 
                 for (int i = 1; i < loadData.savedScore.Count; i++)
                 {
-                    if (loadData.savedScore[i] > tempScore)
+                    if (loadData.savedScore[i] > maxScore)
                     {
-                        tempScore = loadData.savedScore[i];
-                        tempName = loadData.savedPlayerName[i];
+                        maxScore = loadData.savedScore[i];
+                        maxIndex = i;
                     }
                 }
 
-                bestScore = tempScore;
-                bestPlayerName = tempName;
+                bestScore = maxScore;
+                bestPlayerName = loadData.savedPlayerName[maxIndex];
 
                 Debug.Log("Top Player Restored");
             }
